@@ -235,15 +235,16 @@ class Grapher:
 
         if export_graph:
 
-            if not os.path.exists('../../figures/graphs'):
-                os.makedirs('../../figures/graphs')
+            if not os.path.exists('figures/graphs'):
+                os.makedirs('figures/graphs')
 
-            plot_path = '../../figures/graphs/' + self.filename + 'plain_graph' '.jpg'
+            plot_path = 'figures/graphs/' + self.filename + 'plain_graph' '.jpg'
             print(plot_path)
             layout = nx.kamada_kawai_layout(G)
             layout = nx.spring_layout(G)
-            nx.draw(G, layout, with_labels=True)
+            nx.draw_networkx(G, layout, with_labels=True)
             plt.savefig(plot_path, format="PNG", dpi=600)
+            plt.clf()
             # plt.show()
 
         # connect with the interim file that has labels in it
@@ -411,10 +412,10 @@ class Grapher:
                 # cv2.imshow("image", img)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                if not os.path.exists('../../figures/graphs'):
-                    os.makedirs('../../figures/graphs')
+                if not os.path.exists('figures/graphs'):
+                    os.makedirs('figures/graphs')
 
-                plot_path = '../../figures/graphs/' + self.filename + 'docu_graph' '.jpg'
+                plot_path = 'figures/graphs/' + self.filename + 'docu_graph' '.jpg'
                 cv2.imwrite(plot_path, img)
 
         # drop the unnecessary columns
@@ -425,7 +426,10 @@ class Grapher:
 
 
 if __name__ == "__main__":
-    file = '339'
-    connect = Grapher(file)
-    G, result, df = connect.graph_formation(export_graph=True)
-    df = connect.relative_distance(export_document_graph=True)
+    path = '../dataset/sroie-2019/raw/box/'
+
+    file_list = [i.split('.')[0] for i in os.listdir(path) if i.endswith('.csv')]
+    for file in file_list:
+        connect = Grapher(file, data_fd="../dataset/sroie-2019")
+        G, result, df = connect.graph_formation(export_graph=True)
+        df = connect.relative_distance(export_document_graph=True)
